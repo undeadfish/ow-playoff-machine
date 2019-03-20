@@ -339,10 +339,10 @@ class Standings extends React.Component
 		
 		if(tableFooterText.length > 0)
 		{
-			tableFooter = <tr><td className="standingsTableFooter" colSpan="4">{tableFooterText}</td></tr>;
+			tableFooter = <tr><td className="standingsTableFooter" colSpan="6">{tableFooterText}</td></tr>;
 		}
 
-		var tableHeader = <tr><td className="standingsTableHeader" colSpan="4">{this.props.title}</td></tr>;
+		var tableHeader = <tr><td className="standingsTableHeader" colSpan="6">{this.props.title}</td></tr>;
 
 		return (
 			<table className="standingsTable">
@@ -418,7 +418,7 @@ class StandingPlace extends React.Component
 					</div>
 				</td>
 				<td className="standingsColumnData">
-					<div>{teams.points}</div>
+					<div>{team.points}</div>
 				</td>
 				<td className="standingsColumnData">
 					<div>{team.wins}</div>
