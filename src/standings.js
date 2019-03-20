@@ -37,8 +37,10 @@ class Standings extends React.Component
 		var unplayedMatches = [];
 		for(var i = 0; i < teams.length; i++)
 		{
+			teams[i].competitor.points = 0;
 			teams[i].competitor.wins = 0;
 			teams[i].competitor.losses = 0;
+			teams[i].competitor.m5losses = 0;
 			teams[i].competitor.mapDiff = 0;
 			teams[i].competitor.matches = 0;
 			teams[i].competitor.oppH2H = [];
@@ -72,11 +74,17 @@ class Standings extends React.Component
 					if(match.scores[index].value > match.scores[otherIndex].value)
 					{
 						teams[j].competitor.wins++;
+						teams[j].competitor.points += 2;
 						teams[j].competitor.oppH2H[oppId].match++;
 					}
 					else if (match.scores[index].value < match.scores[otherIndex].value)
 					{
-						teams[j].competitor.losses++;
+						if(match.games.length == 5) {
+							teams[j].competitor.points++;
+							teams[j].competitor.m5losses++;
+						} else {
+							teams[j].competitor.losses++;
+						}
 						teams[j].competitor.oppH2H[oppId].match--;
 					}
 
@@ -95,8 +103,8 @@ class Standings extends React.Component
 				if(i !== j)
 				{
 					teams[i].competitor.oppH2H[teams[j].competitor.id].magicNumber.match = teams[i].competitor.matches - teams[i].competitor.wins - teams[j].competitor.losses;
-					var gamesRemaining = teams[i].competitor.matches - teams[i].competitor.wins - teams[i].competitor.losses
-					var oppGamesRemaining = teams[j].competitor.matches - teams[j].competitor.wins - teams[j].competitor.losses
+					var gamesRemaining = teams[i].competitor.matches - teams[i].competitor.wins - teams[i].competitor.losses - teams[i].competitor.m5losses;
+					var oppGamesRemaining = teams[j].competitor.matches - teams[j].competitor.wins - teams[j].competitor.losses - teams[i].competitor.m5losses;
 					teams[i].competitor.oppH2H[teams[j].competitor.id].magicNumber.map = (gamesRemaining + oppGamesRemaining) * 4 + teams[j].competitor.mapDiff - teams[i].competitor.mapDiff;
 				}
 			}
@@ -104,7 +112,11 @@ class Standings extends React.Component
 
 		teams.sort(function(a,b)
 		{
-			if(a.competitor.wins !== b.competitor.wins)
+			if(a.competitor.points !== b.competitor.points) 
+			{
+				return b.competitor.points - a.competitor.points;
+			} 
+			else if(a.competitor.wins !== b.competitor.wins)
 			{
 				return b.competitor.wins - a.competitor.wins;
 			}
@@ -338,8 +350,10 @@ class Standings extends React.Component
 					{tableHeader}
 					<tr>
 						<th>Team</th>
+						<th className="standingsColumnData">Pts</th>
 						<th className="standingsColumnData">W</th>
 						<th className="standingsColumnData">L</th>
+						<th className="standingsColumnData">M5L</th>
 						<th className="standingsColumnData">+/-</th>
 					</tr>
 				</thead>
@@ -404,10 +418,16 @@ class StandingPlace extends React.Component
 					</div>
 				</td>
 				<td className="standingsColumnData">
+					<div>{teams.points}</div>
+				</td>
+				<td className="standingsColumnData">
 					<div>{team.wins}</div>
 				</td>
 				<td className="standingsColumnData">
 					<div>{team.losses}</div>
+				</td>
+				<td className="standingsColumnData">
+					<div>{team.m5losses}</div>
 				</td>
 				<td className="standingsColumnData">
 					<div>{team.mapDiff}</div>
